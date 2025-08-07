@@ -1,9 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36310.24 d17.14
+VisualStudioVersion = 17.14.36310.24
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alphicsh.Applikite.Core", "Alphicsh.Applikite.Core\Alphicsh.Applikite.Core.csproj", "{E3D0AD46-2D78-4B8D-BA23-035DBBBA9AAE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{11821E21-E01D-4121-B91F-1CF73C23830A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alphicsh.Applikite.Files.Tests", "Tests\Alphicsh.Applikite.Files.Tests\Alphicsh.Applikite.Files.Tests.csproj", "{CCDD9469-C9BD-48A5-AA37-891FAAE3DA14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +21,17 @@ Global
 		{E3D0AD46-2D78-4B8D-BA23-035DBBBA9AAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3D0AD46-2D78-4B8D-BA23-035DBBBA9AAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3D0AD46-2D78-4B8D-BA23-035DBBBA9AAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCDD9469-C9BD-48A5-AA37-891FAAE3DA14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCDD9469-C9BD-48A5-AA37-891FAAE3DA14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCDD9469-C9BD-48A5-AA37-891FAAE3DA14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCDD9469-C9BD-48A5-AA37-891FAAE3DA14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E3D0AD46-2D78-4B8D-BA23-035DBBBA9AAE} = {11821E21-E01D-4121-B91F-1CF73C23830A}
+		{CCDD9469-C9BD-48A5-AA37-891FAAE3DA14} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3FAC1C99-6CC7-4FC1-9168-CE3D100054DB}
