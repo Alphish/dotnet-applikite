@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alphicsh.Applikite.ViewMode
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alphicsh.Applikite.Models.Tests", "Tests\Alphicsh.Applikite.Models.Tests\Alphicsh.Applikite.Models.Tests.csproj", "{6B3B9ECB-A237-4A4E-A103-9B304C7CA695}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alphicsh.Applikite.ViewModels.Tests", "Tests\Alphicsh.Applikite.ViewModels.Tests\Alphicsh.Applikite.ViewModels.Tests.csproj", "{7C26ED0E-1A9D-4DD2-8E0E-B865B8A9EA82}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{6B3B9ECB-A237-4A4E-A103-9B304C7CA695}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B3B9ECB-A237-4A4E-A103-9B304C7CA695}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B3B9ECB-A237-4A4E-A103-9B304C7CA695}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C26ED0E-1A9D-4DD2-8E0E-B865B8A9EA82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C26ED0E-1A9D-4DD2-8E0E-B865B8A9EA82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C26ED0E-1A9D-4DD2-8E0E-B865B8A9EA82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C26ED0E-1A9D-4DD2-8E0E-B865B8A9EA82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +52,7 @@ Global
 		{CCDD9469-C9BD-48A5-AA37-891FAAE3DA14} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{67EA46AA-8A9E-496F-83A6-2FBD6394F2BA} = {11821E21-E01D-4121-B91F-1CF73C23830A}
 		{6B3B9ECB-A237-4A4E-A103-9B304C7CA695} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{7C26ED0E-1A9D-4DD2-8E0E-B865B8A9EA82} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3FAC1C99-6CC7-4FC1-9168-CE3D100054DB}
