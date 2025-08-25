@@ -12,6 +12,6 @@ public interface ITaskChannel<TResult>
     IProgressHandler<TProgress> GetProgressHandler<TProgress>();
 
     Task<TResult> GetResultAsync();
-    TResult? Result { get; }
+    TResult Result { get; }
     event EventHandler<TResult>? TaskCompleted;
 }
