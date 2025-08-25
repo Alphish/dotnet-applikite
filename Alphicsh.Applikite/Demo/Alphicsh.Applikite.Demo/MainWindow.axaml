@@ -23,6 +23,10 @@
       HorizontalAlignment="Center" VerticalAlignment="Center"
       >
       <TextBox Width="320" Text="{Binding Bottom.BottomText}"/>
+      <TextBox Width="320" Text="{Binding Bottom.GenerateHashTask.Result}" />
+      <ProgressBar Width="320" Height="20" Minimum="0" Value="{Binding Bottom.GenerateHashTask.Progress.Current}" Maximum="{Binding Bottom.GenerateHashTask.Progress.Target}"/>
+      <Button HorizontalAlignment="Center" Width="120" Command="{Binding Bottom.GenerateHashTask.SendTaskCommand}" HorizontalContentAlignment="Center">Generate</Button>
+      <Button HorizontalAlignment="Center" Width="120" Command="{Binding Bottom.GenerateHashTask.CancelTaskCommand}" HorizontalContentAlignment="Center">Cancel</Button>
     </StackPanel>
   </Grid>
 </Window>
