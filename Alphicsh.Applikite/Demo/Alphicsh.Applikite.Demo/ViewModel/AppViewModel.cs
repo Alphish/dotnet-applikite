@@ -9,8 +9,10 @@ public class AppViewModel : BaseViewModel
     {
         Top = new TopViewModel(model);
         Bottom = new BottomViewModel(model);
+        ToDo = new ToDoViewModel(model);
     }
 
     public TopViewModel Top { get; }
     public BottomViewModel Bottom { get; }
+    public ToDoViewModel ToDo { get; }
 }

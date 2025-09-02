@@ -9,24 +9,58 @@
   x:DataType="vm:AppViewModel"
   Title="Alphicsh.Applikite.Demo"
   >
-  <Grid RowDefinitions="1*, 1*">
-    <StackPanel
-      Grid.Row="0"
-      HorizontalAlignment="Center" VerticalAlignment="Center"
-      >
-      <TextBox Width="320" Text="{Binding Top.TopText}" />
-      <Button HorizontalAlignment="Center" Width="120" Command="{Binding Top.UppercaseTextCommand}" HorizontalContentAlignment="Center">Uppercase</Button>
-    </StackPanel>
+  <TabControl>
+    <TabItem Header="Basics">
+      <Grid RowDefinitions="1*, 1*">
+        <StackPanel
+          Grid.Row="0"
+          HorizontalAlignment="Center" VerticalAlignment="Center"
+          >
+          <TextBox Width="320" Text="{Binding Top.TopText}" />
+          <Button HorizontalAlignment="Center" Width="120" Command="{Binding Top.UppercaseTextCommand}" HorizontalContentAlignment="Center">Uppercase</Button>
+        </StackPanel>
 
-    <StackPanel
-      Grid.Row="1"
-      HorizontalAlignment="Center" VerticalAlignment="Center"
-      >
-      <TextBox Width="320" Text="{Binding Bottom.BottomText}"/>
-      <TextBox Width="320" Text="{Binding Bottom.GenerateHashTask.Result}" />
-      <ProgressBar Width="320" Height="20" Minimum="0" Value="{Binding Bottom.GenerateHashTask.Progress.Current}" Maximum="{Binding Bottom.GenerateHashTask.Progress.Target}"/>
-      <Button HorizontalAlignment="Center" Width="120" Command="{Binding Bottom.GenerateHashTask.SendTaskCommand}" HorizontalContentAlignment="Center">Generate</Button>
-      <Button HorizontalAlignment="Center" Width="120" Command="{Binding Bottom.GenerateHashTask.CancelTaskCommand}" HorizontalContentAlignment="Center">Cancel</Button>
-    </StackPanel>
-  </Grid>
+        <StackPanel
+          Grid.Row="1"
+          HorizontalAlignment="Center" VerticalAlignment="Center"
+          >
+          <TextBox Width="320" Text="{Binding Bottom.BottomText}"/>
+          <TextBox Width="320" Text="{Binding Bottom.GenerateHashTask.Result}" />
+          <ProgressBar Width="320" Height="20" Minimum="0" Value="{Binding Bottom.GenerateHashTask.Progress.Current}" Maximum="{Binding Bottom.GenerateHashTask.Progress.Target}"/>
+          <Button HorizontalAlignment="Center" Width="120" Command="{Binding Bottom.GenerateHashTask.SendTaskCommand}" HorizontalContentAlignment="Center">Generate</Button>
+          <Button HorizontalAlignment="Center" Width="120" Command="{Binding Bottom.GenerateHashTask.CancelTaskCommand}" HorizontalContentAlignment="Center">Cancel</Button>
+        </StackPanel>
+      </Grid>
+    </TabItem>
+
+    <TabItem Header="To Do">
+      <Grid RowDefinitions="Auto, 1*" DataContext="{Binding ToDo}">
+        <Button Grid.Row="0"
+          HorizontalAlignment="Center"
+          Width="120" Margin="2"
+          Command="{Binding AddItemCommand}"
+          HorizontalContentAlignment="Center"
+        >Add Item</Button>
+        
+        <ListBox Grid.Row="1" ItemsSource="{Binding ToDoList}">
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="vm:ItemViewModel">
+              <Grid RowDefinitions="1*, 1*" ColumnDefinitions="Auto, 1*" HorizontalAlignment="Center">
+                <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="0"
+                  Width="120" Margin="2"
+                  Command="{Binding $parent[Grid;1].((vm:ToDoViewModel)DataContext).RemoveItemCommand}"
+                  CommandParameter="{Binding}"
+                  HorizontalContentAlignment="Center"
+                  >
+                  Remove
+                </Button>
+                <TextBox Grid.Row="0" Grid.Column="1" Width="320" Margin="2" HorizontalAlignment="Left" Text="{Binding Name}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Width="640" Margin="2" HorizontalAlignment="Left" Text="{Binding Description}"/>
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </Grid>
+    </TabItem>
+  </TabControl>
 </Window>

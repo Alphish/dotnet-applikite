@@ -14,11 +14,18 @@ public class AppModel
     public ValueSource<string> TextSource { get; }
     public string Text { get => TextSource.Value; set => TextSource.Value = value; }
 
+    public CollectionSource<ItemModel> ToDoList { get; }
+
     public ITaskStream<string, IntegerProgress> GenerateHashTaskStream { get; }
 
     public AppModel()
     {
         TextSource = ValueSource.Create("Hello!");
+        ToDoList = new CollectionSource<ItemModel>()
+        {
+            new ItemModel { Name = "Lorem", Description = "The most basic element" },
+            new ItemModel { Name = "Ipsum", Description = "A valuable support" },
+        };
 
         var hashTaskSource = DelegateTaskSource.Of(GenerateHashAsync);
         var hashTaskChannel = new LastTaskChannel<string>("");
