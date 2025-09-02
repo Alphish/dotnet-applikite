@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using Alphicsh.Applikite.Models;
 using Alphicsh.Applikite.ViewModels.Properties;
 
