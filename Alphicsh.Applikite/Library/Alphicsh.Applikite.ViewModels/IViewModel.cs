@@ -8,3 +8,8 @@ public interface IViewModel : INotifyPropertyChanged, IDisposable
     void RaisePropertyChanged(string propertyName);
 }
 
+public interface IViewModel<TModel> : IViewModel
+    where TModel : class
+{
+    TModel Model { get; }
+}
