@@ -1,15 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 
 namespace Alphicsh.Applikite.Models;
 
 public class CollectionSource<TItem> : ICollectionSource<TItem>
     where TItem : class
 {
-    private List<TItem> UnderlyingList { get; } = new List<TItem>();
+    private List<TItem> UnderlyingList { get; }
 
     public event NotifyCollectionChangedEventHandler? CollectionChanged;
+
+    public CollectionSource()
+    {
+        UnderlyingList = new List<TItem>();
+    }
+
+    public CollectionSource(IEnumerable<TItem> initialItems)
+    {
+        UnderlyingList = new List<TItem>(initialItems);
+    }
 
     // -----------
     // Enumeration
@@ -26,7 +37,7 @@ public class CollectionSource<TItem> : ICollectionSource<TItem>
     // ----------
 
     public int Count => UnderlyingList.Count;
-    bool ICollection<TItem>.IsReadOnly => (UnderlyingList as ICollection<TItem>).IsReadOnly;
+    bool ICollection<TItem>.IsReadOnly => false;
 
     public bool Contains(TItem item)
         => UnderlyingList.Contains(item);
@@ -36,8 +47,9 @@ public class CollectionSource<TItem> : ICollectionSource<TItem>
 
     public void Add(TItem item)
     {
+        var index = UnderlyingList.Count;
         UnderlyingList.Add(item);
-        RaiseAdd(item);
+        RaiseInsert(index, item);
     }
 
     public void Clear()
@@ -93,15 +105,23 @@ public class CollectionSource<TItem> : ICollectionSource<TItem>
         RaiseRemove(index, item);
     }
 
+    // -----------
+    // Own methods
+    // -----------
+
+    public void ReplaceItems(IEnumerable<TItem> items)
+    {
+        if (UnderlyingList.SequenceEqual(items))
+            return;
+
+        UnderlyingList.Clear();
+        UnderlyingList.AddRange(items);
+        RaiseReset();
+    }
+
     // ------
     // Events
     // ------
-
-    public void RaiseAdd(TItem item)
-    {
-        var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item);
-        CollectionChanged?.Invoke(this, e);
-    }
 
     public void RaiseInsert(int index, TItem item)
     {
