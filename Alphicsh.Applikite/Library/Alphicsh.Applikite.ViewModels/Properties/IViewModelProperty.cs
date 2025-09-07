@@ -1,4 +1,5 @@
-﻿using Alphicsh.Applikite.Models;
+﻿using System;
+using Alphicsh.Applikite.Models;
 
 namespace Alphicsh.Applikite.ViewModels.Properties;
 

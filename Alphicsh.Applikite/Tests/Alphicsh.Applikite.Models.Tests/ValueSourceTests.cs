@@ -11,8 +11,8 @@ public class ValueSourceTests
         GivenSourceWithInitialValue(123);
         GivenNewValue(456);
         WhenNewValueSet();
-        ThenValueShouldBe(456);
-        ThenChangeShouldBeReported(oldValue: 123, newValue: 456);
+        ThenExpectValue(456);
+        ThenExpectValueChangeEvent(oldValue: 123, newValue: 456);
     }
 
     [Fact]
@@ -21,8 +21,8 @@ public class ValueSourceTests
         GivenSourceWithInitialValue(123);
         GivenNewValue(123);
         WhenNewValueSet();
-        ThenValueShouldBe(123);
-        ThenNoChangeShouldBeReported();
+        ThenExpectValue(123);
+        ThenExpectNoValueChangeEvent();
     }
 
     // -----
@@ -51,9 +51,10 @@ public class ValueSourceTests
         => Source.Value = NewValue;
 
 
-    private void ThenValueShouldBe(int value)
+    private void ThenExpectValue(int value)
         => Source.Value.ShouldBe(value);
-    private void ThenChangeShouldBeReported(int oldValue, int newValue)
+
+    private void ThenExpectValueChangeEvent(int oldValue, int newValue)
     {
         ReportedSender.ShouldBe(Source);
         ReportedChange.ShouldNotBeNull();
@@ -61,7 +62,7 @@ public class ValueSourceTests
         ReportedChange.NewValue.ShouldBe(newValue);
     }
 
-    private void ThenNoChangeShouldBeReported()
+    private void ThenExpectNoValueChangeEvent()
     {
         ReportedSender.ShouldBeNull();
         ReportedChange.ShouldBeNull();

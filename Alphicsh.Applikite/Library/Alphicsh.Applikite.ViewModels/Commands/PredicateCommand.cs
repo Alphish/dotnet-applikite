@@ -1,4 +1,6 @@
-﻿namespace Alphicsh.Applikite.ViewModels.Commands;
+﻿using System;
+
+namespace Alphicsh.Applikite.ViewModels.Commands;
 
 public class PredicateCommand : IConditionalCommand
 {
