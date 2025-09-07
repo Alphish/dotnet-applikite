@@ -34,68 +34,92 @@ public class CollectionViewModel<TModel, TViewModel> : ICollectionViewModel<TMod
     IEnumerator IEnumerable.GetEnumerator()
         => ViewModels.GetEnumerator();
 
-    // --------------------
-    // IList implementation
-    // --------------------
+    // ----------
+    // Collection
+    // ----------
 
     public int Count => ViewModels.Count;
+    public bool IsReadOnly => false;
 
-    bool IList.IsFixedSize => (ViewModels as IList).IsFixedSize;
-    bool IList.IsReadOnly => (ViewModels as IList).IsReadOnly;
     bool ICollection.IsSynchronized => (ViewModels as ICollection).IsSynchronized;
     object ICollection.SyncRoot => (ViewModels as ICollection).SyncRoot;
 
-    object? IList.this[int index]
-    {
-        get => ViewModels[index];
-        set
-        {
-            if (value is not TViewModel itemViewModel)
-                throw new InvalidCastException();
+    public bool Contains(TViewModel item)
+        => Model.Contains(item.Model);
 
-            Model[index] = itemViewModel.Model;
-        }
-    }
+    bool IList.Contains(object? value)
+        => value is TViewModel itemViewModel && Contains(itemViewModel);
+
+    public void CopyTo(TViewModel[] array, int arrayIndex)
+        => ViewModels.CopyTo(array, arrayIndex);
+
+    void ICollection.CopyTo(Array array, int index)
+        => (ViewModels as ICollection).CopyTo(array, index);
+
+    public void Add(TViewModel item)
+        => Model.Add(item.Model);
 
     int IList.Add(object? value)
     {
         if (value is not TViewModel itemViewModel)
             throw new InvalidCastException();
 
-        Model.Add(itemViewModel.Model);
+        Add(itemViewModel);
         return Model.Count - 1;
     }
 
-    void IList.Clear()
+    public void Clear()
         => Model.Clear();
 
-    bool IList.Contains(object? value)
-        => value is TViewModel itemViewModel && Model.Contains(itemViewModel.Model);
-
-    int IList.IndexOf(object? value)
-        => value is TViewModel itemViewModel ? Model.IndexOf(itemViewModel.Model) : -1;
-
-    void IList.Insert(int index, object? value)
-    {
-        if (value is not TViewModel itemViewModel)
-            throw new InvalidCastException();
-
-        Model.Insert(index, itemViewModel.Model);
-    }
+    public bool Remove(TViewModel item)
+        => Model.Remove(item.Model);
 
     void IList.Remove(object? value)
     {
         if (value is not TViewModel itemViewModel)
             throw new InvalidCastException();
 
-        Model.Remove(itemViewModel.Model);
+        Remove(itemViewModel);
     }
 
-    void IList.RemoveAt(int index)
+    // --------------------
+    // IList implementation
+    // --------------------
+
+    public TViewModel this[int index] { get => ViewModels[index]; set => Model[index] = value.Model; }
+    object? IList.this[int index] { get => this[index]; set => this[index] = (TViewModel)value!; }
+
+    bool IList.IsFixedSize => false;
+
+    public int IndexOf(TViewModel item)
+        => Model.IndexOf(item.Model);
+
+    int IList.IndexOf(object? value)
+        => value is TViewModel itemViewModel ? IndexOf(itemViewModel) : -1;
+
+    public void Insert(int index, TViewModel item)
+        => Model.Insert(index, item.Model);
+
+    void IList.Insert(int index, object? value)
+    {
+        if (value is not TViewModel itemViewModel)
+            throw new InvalidCastException();
+
+        Insert(index, itemViewModel);
+    }
+
+    public void RemoveAt(int index)
         => Model.RemoveAt(index);
 
-    void ICollection.CopyTo(Array array, int index)
-        => (ViewModels as ICollection).CopyTo(array, index);
+    // -----------
+    // Own methods
+    // -----------
+
+    public void ReplaceItems(IEnumerable<TViewModel> items)
+    {
+        var models = items.Select(item => item.Model);
+        Model.ReplaceItems(models);
+    }
 
     // ---------------
     // Synchronization
@@ -107,27 +131,16 @@ public class CollectionViewModel<TModel, TViewModel> : ICollectionViewModel<TMod
         {
             case NotifyCollectionChangedAction.Add:
                 var itemsToAdd = e.NewItems!.OfType<TModel>().Select(TViewModel.FromModel).ToList();
-                if (e.NewStartingIndex < 0)
-                {
-                    ViewModels.AddRange(itemsToAdd);
-                    RaiseAdd(itemsToAdd);
-                }
-                else
-                {
-                    ViewModels.InsertRange(e.NewStartingIndex, itemsToAdd);
-                    RaiseInsert(e.NewStartingIndex, itemsToAdd);
-                }
-
+                ViewModels.InsertRange(e.NewStartingIndex, itemsToAdd);
+                RaiseInsert(e.NewStartingIndex, itemsToAdd);
                 break;
 
             case NotifyCollectionChangedAction.Remove:
-                if (e.NewStartingIndex < 0)
-                    goto case NotifyCollectionChangedAction.Reset; // can't figure out unindexed removal
-
                 var removeCount = e.OldItems!.Count;
-                var removedItems = ViewModels.Skip(e.NewStartingIndex).Take(removeCount).ToList();
-                ViewModels.RemoveRange(e.NewStartingIndex, removeCount);
-                RaiseRemove(e.NewStartingIndex, removedItems);
+                var removedItems = ViewModels.Skip(e.OldStartingIndex).Take(removeCount).ToList();
+                removedItems.ForEach(item => item.Dispose());
+                ViewModels.RemoveRange(e.OldStartingIndex, removeCount);
+                RaiseRemove(e.OldStartingIndex, removedItems);
                 break;
 
             case NotifyCollectionChangedAction.Replace:
@@ -135,63 +148,52 @@ public class CollectionViewModel<TModel, TViewModel> : ICollectionViewModel<TMod
                 var endIndex = startIndex + e.NewItems!.Count;
 
                 var oldItems = ViewModels.Skip(startIndex).Take(endIndex - startIndex).ToList();
+                oldItems.ForEach(item => item.Dispose());
                 for (var i = startIndex; i < endIndex; i++)
                 {
                     ViewModels[i] = TViewModel.FromModel(Model[i]);
                 }
                 var newItems = ViewModels.Skip(startIndex).Take(endIndex - startIndex).ToList();
-
+                RaiseReplace(startIndex, oldItems, newItems);
                 break;
+
+            case NotifyCollectionChangedAction.Move:
+                // might be implemented later
+                throw new NotImplementedException();
 
             case NotifyCollectionChangedAction.Reset:
-                Synchronize();
+                RebuildFromSource();
                 RaiseReset();
                 break;
-
-            default:
-                throw new NotSupportedException($"Cannot process collection change action of type {e.Action}.");
         }
     }
 
-    private void Synchronize()
+    private void RebuildFromSource()
     {
         if (Model.Count == 0)
-            ViewModels = new List<TViewModel>();
-
-        var startingIndex = 0;
-        var minCount = Math.Min(Model.Count, ViewModels.Count);
-        for (var i = 0; i < minCount; i++)
         {
-            if (ViewModels[i].Model == Model[i])
-                startingIndex++;
-            else
-                break;
+            ViewModels.ForEach(item => item.Dispose());
+            ViewModels.Clear();
+            return;
         }
 
-        var viewModelsByModels = ViewModels.Skip(startingIndex).ToDictionary(viewModel => viewModel.Model);
-        if (ViewModels.Count > Model.Count)
-            ViewModels.RemoveRange(Model.Count, ViewModels.Count - Model.Count);
+        var viewModelsByModels = ViewModels.ToDictionary(viewModel => viewModel.Model);
+        ViewModels.Clear();
 
-        for (var i = startingIndex; i < Model.Count; i++)
+        for (var i = 0; i < Model.Count; i++)
         {
             var viewModel = viewModelsByModels.TryGetValue(Model[i], out var existingViewModel) ? existingViewModel : TViewModel.FromModel(Model[i]);
-
-            if (i < ViewModels.Count)
-                ViewModels[i] = viewModel;
-            else
-                ViewModels.Add(viewModel);
+            viewModelsByModels.Remove(Model[i]);
+            ViewModels.Add(viewModel);
         }
+
+        var removedViewModels = viewModelsByModels.Values.ToList();
+        removedViewModels.ForEach(item => item.Dispose());
     }
 
     // ------
     // Events
     // ------
-
-    public void RaiseAdd(IList<TViewModel> items)
-    {
-        var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, items as IList, ViewModels.Count - items.Count);
-        CollectionChanged?.Invoke(this, e);
-    }
 
     public void RaiseInsert(int index, IList<TViewModel> items)
     {
@@ -223,6 +225,10 @@ public class CollectionViewModel<TModel, TViewModel> : ICollectionViewModel<TMod
 
     public void Dispose()
     {
+        foreach (var viewModel in ViewModels)
+        {
+            viewModel.Dispose();
+        }
         Model.CollectionChanged -= ApplyChanges;
     }
 }
