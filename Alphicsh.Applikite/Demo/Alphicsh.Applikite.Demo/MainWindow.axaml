@@ -4,6 +4,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:vm="using:Alphicsh.Applikite.Demo.ViewModel"
+  xmlns:kite="using:Alphicsh.Applikite.Controls"
   mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
   x:Class="Alphicsh.Applikite.Demo.MainWindow"
   x:DataType="vm:AppViewModel"
@@ -60,6 +61,20 @@
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
+      </Grid>
+    </TabItem>
+
+    <TabItem Header="Image">
+      <Grid RowDefinitions="Auto, Auto, 1*" DataContext="{Binding ImageTab}">
+        <WrapPanel Grid.Row="0" HorizontalAlignment="Center" Margin="2">
+          <Label HorizontalContentAlignment="Right" Width="160">Source: </Label>
+          <TextBox Width="320" Text="{Binding Image.Path}"/>
+        </WrapPanel>
+        <WrapPanel Grid.Row="1" HorizontalAlignment="Center" Margin="2">
+          <Label HorizontalContentAlignment="Right" Width="160">Placeholder: </Label>
+          <TextBox Width="320" Text="{Binding PlaceholderImage.Path}"/>
+        </WrapPanel>
+        <kite:ImpImage Grid.Row="2" Margin="20" Stretch="None" Source="{Binding Image.Source}" Placeholder="{Binding PlaceholderImage.Source}"/>
       </Grid>
     </TabItem>
   </TabControl>
