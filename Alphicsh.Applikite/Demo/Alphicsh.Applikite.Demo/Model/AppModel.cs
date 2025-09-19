@@ -18,18 +18,31 @@ public class AppModel
 
     public ITaskStream<string, IntegerProgress> GenerateHashTaskStream { get; }
 
+    public ValueSource<string> ImagePathSource { get; }
+    public string ImagePath { get => ImagePathSource.Value; set => ImagePathSource.Value = value; }
+
+    public ValueSource<string> PlaceholderImagePathSource { get; }
+    public string PlaceholderImagePath { get => PlaceholderImagePathSource.Value; set => PlaceholderImagePathSource.Value = value; }
+
     public AppModel()
     {
+        // basics
         TextSource = ValueSource.Create("Hello!");
+
+        var hashTaskSource = DelegateTaskSource.Of(GenerateHashAsync);
+        var hashTaskChannel = new LastTaskChannel<string>("");
+        GenerateHashTaskStream = new TaskStream<string, IntegerProgress>(hashTaskSource, hashTaskChannel);
+
+        // to-do list
         ToDoList = new CollectionSource<ItemModel>()
         {
             new ItemModel { Name = "Lorem", Description = "The most basic element" },
             new ItemModel { Name = "Ipsum", Description = "A valuable support" },
         };
 
-        var hashTaskSource = DelegateTaskSource.Of(GenerateHashAsync);
-        var hashTaskChannel = new LastTaskChannel<string>("");
-        GenerateHashTaskStream = new TaskStream<string, IntegerProgress>(hashTaskSource, hashTaskChannel);
+        // images
+        ImagePathSource = ValueSource.Create("");
+        PlaceholderImagePathSource = ValueSource.Create("");
     }
 
     public void UppercaseText()

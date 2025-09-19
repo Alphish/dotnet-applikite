@@ -22,6 +22,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Alphicsh.Applikite.Core\Alphicsh.Applikite.Core.csproj" />
+    <ProjectReference Include="..\..\Library\Alphicsh.Applikite.Controls.Avalonia\Alphicsh.Applikite.Controls.Avalonia.csproj" />
+    <ProjectReference Include="..\..\Library\Alphicsh.Applikite.ViewModels.Avalonia\Alphicsh.Applikite.ViewModels.Avalonia.csproj" />
     <ProjectReference Include="..\..\Library\Alphicsh.Applikite.ViewModels\Alphicsh.Applikite.ViewModels.csproj" />
   </ItemGroup>
 </Project>
